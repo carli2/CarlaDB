@@ -3,6 +3,11 @@ CarlaDB is a in-memory column store with a fast execution engine for analytic co
 
 CarlaDB intends to become the fastest In-Memory Database ever by using aggressive query caching and query compilation via LLVM.
 
+## Compile and run
+
+SQL frontend (written in Node.js):
+ `cd src/sql-nodejs; npm install; make`
+
 ## Design
 
 CarlaDB's design is inspired from the ERIS research project from TU Dresden (https://wwwdb.inf.tu-dresden.de/research-projects/projects/eris/). The basic idea of ERIS is to have a data management core which cares about inserting and updating data and is addressed with a low level programming interface. Multiple in-memory storage nodes (AEU, autonomous execution units) store parts of the data. AEUs communicate through fire-and-forget message passing.
@@ -16,7 +21,19 @@ Data in CarlaDB is stored in a columnar fashion.
 
 ### Main Storage vs Delta Storage
 
-There are two storages: Main Storage and Delta Storage. Main Storage is readonly and Delta Storage is append-only. Whenever the content of the delta storage exceeds a certain size, the Main Storage is rebuilt from the old Main Storage and the Delta Storage. In Main Storage, data is compressed and optimized. Delta Storage also contains data from unfinished transactions while Main Storage is really fixed. Deletions from Main Storage are not possible. Deletions are stored in the delta storage.
+There are two storages: Main Storage and Delta Storage.
+
+Main Storage:
+- columnar storage
+- readonly
+- only committed data
+- compressed and optimized data
+
+Delta Storage:
+- row storage, stored deletion commands
+- append-only
+- is merged into Main Storage whenever the size exceeds a certain limit
+- may contain unfinished transactions
 
 ### Queries
 
