@@ -26,6 +26,8 @@ Queries in CarlaDB are done in a kind of bytecode. This bytecode represents a la
 
 CarlaDB offers widespread functions to do calculations directly in the database. Every query is basically code that is executed inside the database. This allows you to aggregate data in your own fashion, or create JSON strings directly in the database. The goal of this approach is to minimize data transport and move code directly to the data.
 
+The computing model is similar to NodeJS's event based system. A action is invoked an a callback is deposited that shall be executed as soon as the data has arrived.
+
 ## Operations
 CarlaDB's bytecode is a densely packed form of code that can be executed inside the system. Every piece of bytecode is preceeded with it's SHA256 checksum such that compiled bytecode can be cached. Similar to Java bytecode, CarlaDB's bytecode is executed on a virtual stack machine. Technically, it is translated to machine code using LLVM.
 
@@ -53,3 +55,6 @@ CarlaDB has a multithreaded design that can effectively handle large NUMA system
 - Column register: Maps column names to column IDs.
 - Column Pool: The data!
 - Bytecode cache: Map from SHA256sum to compiled machine code
+
+## SQL, GraphQL, NoSQL frontends
+Frontends basically translate incoming queries from a query language to bytecode that is sent to an execution engine. The execution opens a response channel that internal callbacks can write results to.
